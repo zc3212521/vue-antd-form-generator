@@ -92,7 +92,7 @@ export function demoData2renderData (formData) {
         ]
       },
       ui: {
-        style: { padding: '80px' },
+        style: { padding: '10px' },
         gutter: 32
       }
     }
