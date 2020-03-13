@@ -1,5 +1,5 @@
 import { generateUnitId, deepClone } from './index'
-import { controls } from './config'
+import { controls, renderRowType } from './config'
 
 export function formatViewData (e) {
   return generateControlData(e.type)
@@ -49,6 +49,129 @@ export function ifRequiredInRules (rules) {
     if (keys.includes('required')) sign = true
   })
   return sign
+}
+
+/**
+ * 生成渲染列数据
+ * @param formData
+ * @returns {{formDesc: {ui: null, footer: null, rows: []}}}
+ */
+export function demoData2renderData (formData) {
+  const renderRowData = generateRowData(formData)
+  console.log('renderRowData', renderRowData)
+  return {
+    formDesc: {
+      rows: renderRowData,
+      footer: {
+        layout: {
+          labelCol: { span: 4 },
+          wrapperCol: { span: 14, offset: 2 }
+        },
+        buttons: [
+          {
+            text: '确定',
+            type: 'primary',
+            size: 'default',
+            disabled: false,
+            ifValidateForm: true
+          },
+          {
+            text: '取消',
+            type: 'default',
+            size: 'default',
+            disabled: false,
+            ifValidateForm: false
+          },
+          {
+            text: '下一步',
+            type: 'default',
+            size: 'default',
+            disabled: false,
+            ifValidateForm: false
+          }
+        ]
+      },
+      ui: {
+        style: { padding: '80px' },
+        gutter: 32
+      }
+    }
+  }
+}
+
+/**
+ * 生成渲染行数据
+ * @param formData
+ * @returns {[]}
+ */
+function generateRowData (formData) {
+  const rows = []
+  formData.forEach((rowData, index) => {
+    if (renderRowType.formItem.includes(rowData.type)) { // 1版本均为renderRowType
+      rows.push({
+        type: 'formItem',
+        content: generateContent(rowData)
+      })
+    }
+  })
+  console.log(333, rows)
+  return rows
+}
+
+/**
+ * 生成content属性
+ * @param rowData
+ * @returns {{}}
+ */
+function generateContent (rowData) {
+  const content = {}
+  if (rowData.type === 'grid') {
+    rowData.columns.forEach((col, ind) => {
+      const colData = col.children[0]
+      const { attr, contentKey } = transformItemAttr(colData)
+      content[contentKey] = attr
+    })
+  } else {
+    const { attr, contentKey } = transformItemAttr(rowData)
+    content[contentKey] = attr
+  }
+  console.log(222, content)
+  return content
+}
+
+/**
+ * 转换展示数据attr属性为渲染数据的content块属性
+ * @param colData
+ * @returns {{contentKey: (string), attr: *}}
+ */
+function transformItemAttr (colData) {
+  const { attr } = colData
+  const contentKey = attr.id
+  delete attr.id
+  attr.type = colData.type
+  if (attr.type === 'grid') {
+    attr.grid = { // todo grid的处理
+      span: colData.span,
+      offset: 0
+    }
+    attr.layout = {
+      labelCol: { span: 8 },
+      wrapperCol: { span: 16 }
+    }
+  } else {
+    attr.grid = { // todo grid的处理
+      span: 12,
+      offset: 0
+    }
+    attr.layout = {
+      labelCol: { span: 8 },
+      wrapperCol: { span: 16 }
+    }
+  }
+  console.log(111, attr, contentKey)
+  return {
+    attr, contentKey
+  }
 }
 
 // todo 废弃

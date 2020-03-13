@@ -144,3 +144,72 @@ export function getControlList () {
   }
   return controlList
 }
+
+export const testData = [
+  {
+    name: '输入框',
+    type: 'input',
+    attr: {
+      id: 'input-myt1oy43l4m',
+      label: '输入框',
+      placeholder: '请输入文字',
+      initialValue: '',
+      rules: [],
+      layout: 4
+    },
+    key: 'input-myt1oy43l4m'
+  },
+  {
+    name: '栅格',
+    type: 'grid',
+    attr: {
+      id: 'grid-tkf87lq1ri',
+      count: 2,
+      options: [
+        { label: '2', value: 2 },
+        { label: '3', value: 3 },
+        { label: '4', value: 4 },
+        { label: '6', value: 6 }]
+    },
+    columns: [
+      {
+        span: 12,
+        children: [
+          {
+            name: '选择器',
+            type: 'select',
+            attr: {
+              id: 'select-ygu6wpt3jop',
+              label: '选择器',
+              placeholder: '请选择',
+              initialValue: '',
+              rules: [],
+              layout: 4,
+              options: [
+                { label: 'A', value: 0 },
+                { label: 'B', value: 1 }]
+            },
+            key: 'select-ygu6wpt3jop'
+          }]
+      },
+      {
+        span: 12,
+        children: [
+          {
+            name: '单选框',
+            type: 'radio',
+            attr: {
+              id: 'radio-oypwrlr2bn',
+              label: '单选框',
+              initialValue: '',
+              rules: [],
+              layout: 4,
+              options: [
+                { label: 'A', value: 0 },
+                { label: 'B', value: 1 }]
+            },
+            key: 'radio-oypwrlr2bn'
+          }]
+      }],
+    key: 'grid-tkf87lq1ri'
+  }]

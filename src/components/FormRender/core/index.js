@@ -122,9 +122,11 @@ export function validateForm (viewData, fieldName) {
         item.content = validateFormItem(formItem, formDesc, fieldName)
       }
     })
+    console.log(222, rows)
     formDesc.rows = rows
   }
   viewData.formDesc = formDesc
+  console.log(111, formDesc)
   return viewData
 }
 

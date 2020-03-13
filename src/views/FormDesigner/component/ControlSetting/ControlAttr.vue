@@ -25,24 +25,36 @@
           v-decorator="['placeholder']"
         />
       </a-form-item>
-      <a-form-item
-        v-if="checkAttrType('initialValue')"
-        label="默认值"
-      >
-        <a-input
+      <template v-if="checkAttrType('initialValue')">
+        <a-form-item
           v-if="activeType === 'input' || activeType === 'inputNumber'"
-          v-decorator="['initialValue']"
-        />
-        <a-checkbox-group :options="attrObj.options"
-                          v-else-if="activeType === 'checkbox'"
-                          v-decorator="['initialValue']"
-        />
-        <a-radio-group
-          :options="attrObj.options"
-          v-else
-          v-decorator="['initialValue']"
-        />
-      </a-form-item>
+          label="默认值"
+        >
+          <a-input
+            v-decorator="['initialValue']"
+          />
+        </a-form-item>
+        <a-form-item
+          v-else-if="activeType === 'checkbox'"
+          label="默认值"
+        >
+          <a-checkbox-group
+            :options="attrObj.options"
+            v-decorator="['initialValue']"
+          />
+        </a-form-item>
+        <a-form-item v-else label="默认值">
+          <a-radio-group
+            :options="attrObj.options"
+            v-decorator="['initialValue']"
+          />
+        </a-form-item>
+      </template>
+      <option-setting
+        v-if="activeType === 'radio' || activeType === 'checkbox' || activeType === 'select'"
+        :key="activeKey"
+        @update = "updateDataByKey"
+      />
       <a-form-item
         v-if="checkAttrType('layout')"
         label="label宽度"
@@ -73,6 +85,7 @@
 
 <script>
 import RuleSetting from '../common/RuleSetting'
+import OptionSetting from '../common/OptionSetting'
 import { mapState, mapMutations } from 'vuex'
 import { deepClone } from '../../utils'
 import { findIndexWithKey } from '../../utils/core'
@@ -80,13 +93,11 @@ import { findIndexWithKey } from '../../utils/core'
 export default {
   name: 'ControlAttr',
   components: {
-    RuleSetting
+    RuleSetting,
+    OptionSetting
   },
   beforeCreate () {
     this.form = this.$form.createForm(this, {
-      onFieldsChange (props, fields) {
-        console.log('field change', props, fields)
-      },
       onValuesChange: (props, values) => {
         // console.log('values change', props, values)
         this.setAttr(values)
@@ -109,6 +120,14 @@ export default {
   }),
   watch: {
     activeKey: function (val) {
+      this.updateDataByKey(val)
+    }
+  },
+  created () {
+    this.updateDataByKey(this.activeKey)
+  },
+  methods: {
+    updateDataByKey (val) {
       this.activeType = val.split('-')[0]
       const activeArr = findIndexWithKey(this.formData, val)
       let obj = {}
@@ -121,20 +140,19 @@ export default {
       this.activeArr = activeArr
       this.attrObj = obj
       this.attrArr = Object.keys(obj)
+      this.form = this.$form.createForm(this, { // 此处因为默认值是后续加载的，此时form需要重新初始化
+        onValuesChange: (props, values) => {
+          // console.log('values change', props, values)
+          this.setAttr(values)
+        }
+      })
       this.$nextTick(function () {
         const formAttr = deepClone(obj)
-        // console.log(777, obj)
         delete formAttr.options // 删除额外属性
-        delete formAttr.rules // 删除额外属性
-        // if (ifRequiredInRules(formAttr.rules)) {
-        //   formAttr.rules = [1]
-        // }
-        // console.log(888, formAttr)
+        delete formAttr.rules
         this.form.setFieldsValue(formAttr)
       })
-    }
-  },
-  methods: {
+    },
     setAttr (values) {
       const formData = deepClone(this.formData)
       const vKey = Object.keys(values)[0]

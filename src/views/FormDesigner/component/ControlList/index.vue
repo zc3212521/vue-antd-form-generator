@@ -48,6 +48,9 @@ export default {
       if (e.draggedContext.element.type === 'grid' && e.to.className.indexOf('grid-control-wrap') >= 0) {
         return false
       }
+      if (e.to.className.indexOf('grid-control-wrap') >= 0 && e.to.children.length > 0) { // 禁止向gird组件添加多列
+        return false
+      }
     }
   }
 }

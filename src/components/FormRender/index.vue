@@ -50,6 +50,11 @@ export default {
       type: Object
     }
   },
+  data () {
+    return {
+      viewData: null
+    }
+  },
   beforeCreate () {
     this.form = this.$form.createForm(this, {
       // onFieldsChange: function (props, fields) {
@@ -59,15 +64,11 @@ export default {
         console.log('onValuesChange', props, values)
         const currentViewData = core.updateViewDataByField(values, this.viewData)
         const fieldName = Object.keys(values)[0]
-        this.viewData = core.validateForm(currentViewData, fieldName)
-        console.log('validate finsh', this.viewData)
+        const resultViewData = core.validateForm(currentViewData, fieldName)
+        console.log('validate finsh', resultViewData)
+        this.viewData = resultViewData
       }
     })
-  },
-  data () {
-    return {
-      viewData: null
-    }
   },
   computed: {
     rows: function () {
@@ -79,7 +80,6 @@ export default {
   },
   created () {
     this.viewData = core.metaData2ViewData(this.metaData, this.extendPattern)
-    console.log(this.formDesc)
   },
   methods: {
     clickBtn (index, ifValidateForm) {

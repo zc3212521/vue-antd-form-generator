@@ -1,29 +1,45 @@
 <template>
-  <a-form>
-    <a-button @click="reset">reset</a-button>
-    <draggable
-      v-model="list"
-      class="view-wrap"
-      :group="{ name: 'form', pull: true, put: true }"
-      ghostClass="ghost"
-      :animation="300"
-      :move="move"
-      @change="onChange"
-    >
-        <row-view
-          v-for="(item, index) in list"
-          :key="item.key"
-          :index="index"
-          :data="item"
-          class="row-view"
-        />
-    </draggable>
-  </a-form>
+  <div>
+    <div class="action-header">
+      <!-- <pre v-highlightjs><code class="javascript">const s = new Date().toString()</code></pre> -->
+      <preview />
+      <generate-json />
+      <a-popconfirm
+        title="确定要清空列表吗？"
+        @confirm="reset"
+        okText="清空"
+        cancelText="取消"
+      >
+        <a href="#">清空列表</a>
+      </a-popconfirm>
+    </div>
+    <a-form>
+      <draggable
+        v-model="list"
+        class="view-wrap"
+        :group="{ name: 'form', pull: true, put: true }"
+        ghostClass="ghost"
+        :animation="300"
+        :move="move"
+        @change="onChange"
+      >
+          <row-view
+            v-for="(item, index) in list"
+            :key="item.key"
+            :index="index"
+            :data="item"
+            class="row-view"
+          />
+      </draggable>
+    </a-form>
+  </div>
 </template>
 
 <script>
 import draggable from 'vuedraggable'
 import RowView from './RowView'
+import Preview from '../common/Preview'
+import GenerateJson from '../common/GenerateJson'
 import { mapState, mapMutations } from 'vuex'
 import '../../index.css'
 
@@ -31,7 +47,9 @@ export default {
   name: 'FormView',
   components: {
     draggable,
-    RowView
+    RowView,
+    Preview,
+    GenerateJson
   },
   data () {
     return {
@@ -97,5 +115,12 @@ export default {
     background: #cf1322;
     height: 3px;
     overflow: hidden;
+  }
+  .action-header {
+    text-align: right;
+    margin-bottom: 20px;
+    a {
+      margin-right: 20px;
+    }
   }
 </style>

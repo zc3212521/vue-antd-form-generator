@@ -23,7 +23,7 @@ export const controls = [
       placeholder: '请输入文字',
       initialValue: '',
       rules: [],
-      layout: 5
+      layout: 4
     }
   },
   {
@@ -37,7 +37,7 @@ export const controls = [
       placeholder: '请输入数字',
       initialValue: '',
       rules: [],
-      layout: 5
+      layout: 4
     }
   },
   {
@@ -50,7 +50,7 @@ export const controls = [
       label: '单选框',
       initialValue: '',
       rules: [],
-      layout: 5,
+      layout: 4,
       options: [
         { label: 'A', value: 0 },
         { label: 'B', value: 1 }
@@ -67,7 +67,7 @@ export const controls = [
       label: '多选框',
       initialValue: [],
       rules: [],
-      layout: 5,
+      layout: 4,
       options: [
         { label: 'A', value: 0 },
         { label: 'B', value: 1 }
@@ -85,7 +85,7 @@ export const controls = [
       placeholder: '请选择',
       initialValue: '',
       rules: [],
-      layout: 5,
+      layout: 4,
       options: [
         { label: 'A', value: 0 },
         { label: 'B', value: 1 }
@@ -119,6 +119,10 @@ export const controls = [
     ]
   }
 ]
+
+export const renderRowType = {
+  formItem: ['input', 'inputNumber', 'select', 'radio', 'checkbox', 'grid']
+}
 
 export function getControlList () {
   const controlData = []

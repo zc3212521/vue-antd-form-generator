@@ -12,7 +12,7 @@
       最小值：{{minSign ? min + '' : '无'}}
       <a-popover title="最小值">
         <template slot="content">
-          <a-input-number v-model="min"/>
+          <a-input-number :min="0" v-model="min"/>
         </template>
         <a href="#">（设置最小值）</a>
       </a-popover>
@@ -22,7 +22,7 @@
       最大值：{{maxSign ? max + '' : '无'}}
       <a-popover title="最大值">
         <template slot="content">
-          <a-input-number v-model="max" />
+          <a-input-number :min="0" v-model="max" />
         </template>
         <a href="#">（设置最大值）</a>
       </a-popover>
@@ -42,21 +42,27 @@
     <br />
     校验message：<a-input :value="lenMsg" @change="onLenMsg" :disabled="!lenSign"/>
     <br />
-    <div>
-      <a-button @click="visible = true" type="primary">添加其他验证规则</a-button>
-    </div>
-    <a-modal
-      title="添加验证规则"
-      :visible="visible"
-      @ok="addRules"
-      @cancel="visible = false"
-    >
-      haha
-    </a-modal>
+    <a-form-item v-if="patterns.length" label="选择自定义校验">
+      <a-checkbox
+        v-for="(pattern, index) in cusPatterns"
+        :checked="pattern.checked"
+        @change="(e) => onChangePattern(e, index)"
+        :key="pattern.name"
+      >
+        <a-tooltip>
+          <template slot="title">
+            <span>{{pattern.desc}}</span>
+          </template>
+          {{pattern.name}}
+        </a-tooltip>
+      </a-checkbox>
+    </a-form-item>
+    <add-pattern-rule />
   </a-form-item>
 </template>
 
 <script>
+import AddPatternRule from './AddPatternRule'
 import { mapState, mapMutations } from 'vuex'
 import { findIndexWithKey } from '../../utils/core'
 import { deepClone } from '../../utils'
@@ -77,17 +83,24 @@ function getDefaultData () {
 }
 export default {
   name: 'RuleSetting',
+  components: {
+    AddPatternRule
+  },
   data () {
     return {
       ...(getDefaultData()),
       visible: false,
-      activeArr: []
+      activeArr: [],
+      cusPatterns: []
     }
   },
-  computed: mapState({
-    formData: state => state.formDesigner.formData,
-    activeKey: state => state.formDesigner.activeKey
-  }),
+  computed: {
+    ...mapState({
+      formData: state => state.formDesigner.formData,
+      activeKey: state => state.formDesigner.activeKey,
+      patterns: state => state.formDesigner.patterns
+    })
+  },
   watch: {
     min () {
       this.$nextTick(this.updateRangeMsg)
@@ -100,10 +113,12 @@ export default {
     },
     activeKey (val) {
       this.changeFormItem(val)
+      this.updateRules()
     }
   },
   created () {
     this.changeFormItem(this.activeKey)
+    this.updateRules()
   },
   methods: {
     changeFormItem (val) {
@@ -146,9 +161,6 @@ export default {
         this[dataArr[i]] = defaultData[dataArr[i]]
       }
       this.activeArr = activeArr
-    },
-    addRules () {
-      console.log('pattern')
     },
     onRequired (e) {
       const checked = e.target.checked
@@ -219,14 +231,11 @@ export default {
       this.$nextTick(this.transformRulesData)
     },
     transformRulesData () {
-      const formData = deepClone(this.formData)
-      const activeArr = this.activeArr
-      console.log(111, this.activeArr)
       const rules = []
       if (this.required) {
         rules.push({
           required: true,
-          message: this.rangeMsg
+          message: this.requiredMsg
         })
       }
       if (this.minSign && this.maxSign) {
@@ -247,14 +256,64 @@ export default {
           len: this.len, message: this.lenMsg
         })
       }
+      const formData = this.setRules(rules)
+      this.updateFormData(formData)
+    },
+    getRules () {
+      const formData = deepClone(this.formData)
+      const activeArr = this.activeArr
       if (this.activeArr.length === 1) {
+        return formData[activeArr[0]].attr.rules
+      } else if (this.activeArr.length === 3) {
+        return formData[activeArr[0]].columns[activeArr[1]].children[activeArr[2]].attr.rules
+      } else {
+        return []
+      }
+    },
+    setRules (rules) {
+      const formData = deepClone(this.formData)
+      const activeArr = this.activeArr
+      if (activeArr.length === 1) {
         formData[activeArr[0]].attr.rules = rules
       }
-      if (this.activeArr.length === 3) {
+      if (activeArr.length === 3) {
         formData[activeArr[0]].columns[activeArr[1]].children[activeArr[2]].attr.rules = rules
       }
-      console.log(222, rules, formData)
+      return formData
+    },
+    onChangePattern (e, index) {
+      const activePattern = this.patterns[index]
+      const rules = this.getRules()
+      const pIndex = this.patternIndexInRules(rules, activePattern)
+      if (e.target.checked) {
+        rules.push({ pattern: activePattern.name })
+      } else {
+        rules.splice(pIndex, 1)
+      }
+      const formData = this.setRules(rules)
       this.updateFormData(formData)
+      this.updateRules()
+    },
+    patternIndexInRules (rules, pattern) {
+      rules.forEach((item, index) => {
+        if (item.pattern && item.pattern === pattern.name) {
+          return index
+        }
+      })
+      return -1
+    },
+    updateRules () {
+      const rules = this.getRules()
+      const cusPatterns = this.patterns.map(item => {
+        item.checked = false
+        rules.forEach(it => {
+          if (it.pattern && item.name === it.pattern) {
+            item.checked = true
+          }
+        })
+        return item
+      })
+      this.cusPatterns = cusPatterns
     },
     ...mapMutations({
       updateFormData: 'setFormData'

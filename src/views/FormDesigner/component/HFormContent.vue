@@ -34,14 +34,15 @@ export default {
 <style lang="less" scoped>
   .custom-resizer {
     width: 100%;
-    min-height: 100%;
+    min-height: 500px;
+    height: calc(100% - 20px);
   }
   .custom-resizer > .pane {
     text-align: left;
     padding: 15px;
-    overflow: hidden;
+    height: 100%;
     border: 1px solid #ccc;
-    /*overflow-y: scroll;*/
+    overflow-y: scroll;
   }
   .custom-resizer > .multipane-resizer {
     margin: 0;
