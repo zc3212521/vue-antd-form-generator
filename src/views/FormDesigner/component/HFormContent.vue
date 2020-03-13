@@ -40,7 +40,8 @@ export default {
   .custom-resizer > .pane {
     text-align: left;
     padding: 15px;
-    height: 100%;
+    /*height: 100%;*/
+    min-height: 700px;
     border: 1px solid #ccc;
     overflow-y: scroll;
   }

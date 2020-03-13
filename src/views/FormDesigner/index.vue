@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%; overflow: hidden; max-height: 700px;">
+  <div style="height: 100%;">
     <h-form-header />
     <h-form-content />
   </div>

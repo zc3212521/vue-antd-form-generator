@@ -114,7 +114,7 @@ export default {
   .ghost {
     background: #cf1322;
     height: 3px;
-    overflow: hidden;
+    overflow: scroll;
   }
   .action-header {
     text-align: right;
