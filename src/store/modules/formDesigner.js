@@ -8,7 +8,20 @@ const formDesigner = {
       name: 'upper',
       regexp: /^[A-Z]+$/
     }],
-    renderData: []
+    renderData: [],
+    ifShowButton: false,
+    bottomButton: [
+      {
+        text: '确定',
+        validate: true,
+        type: 'primary'
+      },
+      {
+        text: '取消',
+        validate: false,
+        type: 'default'
+      }
+    ]
   },
   mutations: {
     setFormData (state, newData) {
@@ -22,6 +35,12 @@ const formDesigner = {
     },
     setRenderData (state, data) {
       state.renderData = data
+    },
+    setIfShowButton (state, sign) {
+      state.ifShowButton = sign
+    },
+    setBottomButton (state, buttonData) {
+      state.bottomButton = buttonData
     }
   }
 }
