@@ -10,6 +10,11 @@
         destroyOnClose
       >
           <form-render
+            :meta-data="resultData1"
+            @click-btn="getClick"
+            :extend-pattern="myPatterns"
+          />
+          <form-render
             :meta-data="resultData"
             @click-btn="getClick"
             :extend-pattern="myPatterns"
@@ -22,7 +27,8 @@
 import FormRender from '@/components/FormRender'
 import { mapState, mapMutations } from 'vuex'
 import { deepClone } from '../../utils'
-import { demoData2renderData } from '../../utils/core'
+import { transformRowsData, transFormFooterData, transFormUiData, combineRenderData } from '../../utils/core'
+import { exampleData } from '@/components/FormRender/core/example'
 
 export default {
   name: 'AddPatternRule',
@@ -33,6 +39,7 @@ export default {
     return {
       form: this.$form.createForm(this),
       visible: false,
+      resultData1: exampleData,
       resultData: null,
       myPatterns: {
         uppercase: {
@@ -49,14 +56,19 @@ export default {
   computed: mapState({
     renderData: state => state.formDesigner.renderData,
     formData: state => state.formDesigner.formData,
-    patterns: state => state.formDesigner.patterns
+    patterns: state => state.formDesigner.patterns,
+    formCommonSetting: state => state.formDesigner.formCommonSetting
   }),
   watch: {
     visible (val) {
       if (val) {
-        let formData = deepClone(this.formData)
-        formData = demoData2renderData(formData)
-        this.resultData = formData
+        const formData = deepClone(this.formData)
+        const rowData = transformRowsData(formData)
+        const commonSetting = deepClone(this.formCommonSetting)
+        const footerData = transFormFooterData(commonSetting)
+        const uiData = transFormUiData(commonSetting)
+        console.log('render', combineRenderData(rowData, footerData, uiData), exampleData)
+        this.resultData = combineRenderData(rowData, footerData, uiData)
       }
     }
   },

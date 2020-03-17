@@ -1,16 +1,15 @@
 <template>
   <a-form-item
-    :label-col="data.layout.labelCol"
-    :wrapper-col="data.layout.wrapperCol"
+    :style="{ textAlign: data.layout.type }"
   >
     <a-button
       v-for="(btn, index) in buttons"
       :key="btn.text"
       :disabled="btn.disabled"
-      :type="btn.type"
-      :size="btn.size"
+      :type="btn.type || 'default'"
+      :size="btn.size || 'default'"
       @click="() => { clickBtn(index) }"
-      :style="{marginRight: '15px'}"
+      :style="{marginRight: gutter / 2 + 'px'}"
     >{{btn.text}}</a-button>
   </a-form-item>
 </template>
@@ -22,6 +21,10 @@ export default {
     data: {
       type: Object,
       required: true
+    },
+    gutter: {
+      type: Number,
+      default: 24
     }
   },
   computed: {

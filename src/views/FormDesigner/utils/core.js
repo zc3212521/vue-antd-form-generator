@@ -56,45 +56,40 @@ export function ifRequiredInRules (rules) {
  * @param formData
  * @returns {{formDesc: {ui: null, footer: null, rows: []}}}
  */
-export function demoData2renderData (formData) {
+export function transformRowsData (formData) {
   const renderRowData = generateRowData(formData)
   console.log('renderRowData', renderRowData)
   return {
-    formDesc: {
-      rows: renderRowData,
-      footer: {
-        layout: {
-          labelCol: { span: 4 },
-          wrapperCol: { span: 14, offset: 2 }
-        },
-        buttons: [
-          {
-            text: '确定',
-            type: 'primary',
-            size: 'default',
-            disabled: false,
-            ifValidateForm: true
-          },
-          {
-            text: '取消',
-            type: 'default',
-            size: 'default',
-            disabled: false,
-            ifValidateForm: false
-          },
-          {
-            text: '下一步',
-            type: 'default',
-            size: 'default',
-            disabled: false,
-            ifValidateForm: false
-          }
-        ]
+    rows: renderRowData
+  }
+}
+
+export function transFormFooterData (commonSetting) {
+  return {
+    footer: {
+      layout: {
+        type: commonSetting.bottomButtonLayout
       },
-      ui: {
-        style: { padding: '10px' },
-        gutter: 32
-      }
+      buttons: commonSetting.bottomButton
+    }
+  }
+}
+
+export function transFormUiData (commonSetting) {
+  return {
+    ui: {
+      style: { padding: '10px' },
+      gutter: commonSetting.gutter
+    }
+  }
+}
+
+export function combineRenderData (rowData, footerData, uiData) {
+  return {
+    formDesc: {
+      ...rowData,
+      ...footerData,
+      ...uiData
     }
   }
 }

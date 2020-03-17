@@ -7,6 +7,10 @@ const defaultConfig = {
   inputNumber: {
     value: 0,
     type: 'number',
+    exclusive: {
+      min: Infinity,
+      max: Infinity
+    },
     placeholder: '请填入'
   },
   radio: {

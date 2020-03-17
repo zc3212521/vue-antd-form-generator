@@ -29,7 +29,7 @@
             <a-radio value="danger"><a-button type="danger">danger</a-button></a-radio>
           </a-radio-group>
         </template>
-        <template slot="validate" slot-scope="text, record">
+        <template slot="ifValidateForm" slot-scope="text, record">
           <a-switch :checked="text" @change="(checked) => {changeValidateStatus(checked, record)}" />
         </template>
         <template slot="action" slot-scope="text, record">
@@ -76,8 +76,8 @@ export default {
         },
         {
           title: '点击时是否校验表单',
-          dataIndex: 'validate',
-          scopedSlots: { customRender: 'validate' }
+          dataIndex: 'ifValidateForm',
+          scopedSlots: { customRender: 'ifValidateForm' }
         },
         {
           title: '操作',
@@ -90,7 +90,7 @@ export default {
   },
   computed: {
     ...mapState({
-      bottomButton: state => state.formDesigner.bottomButton
+      bottomButton: state => state.formDesigner.formCommonSetting.bottomButton
     })
   },
   created () {
@@ -99,6 +99,7 @@ export default {
   methods: {
     init () {
       const currentBtn = deepClone(this.bottomButton)
+      console.log(222, currentBtn)
       this.btns = currentBtn.map((item, index) => {
         if (!item.key) item.key = generateUnitId()
         return item
@@ -120,7 +121,7 @@ export default {
       btns.push({
         text: '',
         type: 'primary',
-        validate: false,
+        ifValidateForm: false,
         key: generateUnitId()
       })
       this.btns = btns
@@ -129,7 +130,7 @@ export default {
       this.updateBtn(record.key, 'text', text)
     },
     changeValidateStatus (ifValidate, record) {
-      this.updateBtn(record.key, 'validate', ifValidate)
+      this.updateBtn(record.key, 'ifValidateForm', ifValidate)
     },
     changeType (type, record) {
       this.updateBtn(record.key, 'type', type)
@@ -153,7 +154,7 @@ export default {
     },
     delOptions (record) {
       const btns = deepClone(this.btns)
-      const index = Number(record.key)
+      const index = this.findIndexByKey(record.key)
       btns.splice(index, 1)
       this.btns = btns
     },

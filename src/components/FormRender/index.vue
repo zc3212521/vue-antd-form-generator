@@ -23,6 +23,7 @@
     </a-row>
     <footer-com
       :data="formDesc.footer"
+      :gutter="formDesc.ui.gutter"
       @click-btn="clickBtn"
     />
   </a-form>
@@ -57,11 +58,8 @@ export default {
   },
   beforeCreate () {
     this.form = this.$form.createForm(this, {
-      // onFieldsChange: function (props, fields) {
-      //   console.log('onFieldsChange', props, fields)
-      // },
       onValuesChange: (props, values) => {
-        console.log('onValuesChange', props, values)
+        // console.log('onValuesChange', props, values)
         const currentViewData = core.updateViewDataByField(values, this.viewData)
         const fieldName = Object.keys(values)[0]
         const resultViewData = core.validateForm(currentViewData, fieldName)

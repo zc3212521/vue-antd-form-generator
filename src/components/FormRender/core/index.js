@@ -60,6 +60,10 @@ function addDefaultConfig (formItemArr) {
         item.placeholder = cfg.placeholder
       }
     }
+    // 处理专有属性
+    if (cfg.exclusive && !item.exclusive) {
+      item.exclusive = cfg.exclusive
+    }
     // init rules
     if (!item.rules) item.rules = []
 

@@ -124,8 +124,7 @@ export const exampleData = {
     ],
     footer: {
       layout: {
-        labelCol: { span: 4 },
-        wrapperCol: { span: 14, offset: 2 }
+        type: 'center'
       },
       buttons: [
         {

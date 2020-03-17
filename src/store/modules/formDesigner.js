@@ -1,27 +1,18 @@
+import formCommonSetting from './formCommonSetting'
 const formDesigner = {
   state: {
     formData: [],
     activeKey: '',
     patterns: [{
-      desc: '666',
+      desc: '测试正则，所填内容是否为大写',
       message: '大写',
       name: 'upper',
       regexp: /^[A-Z]+$/
     }],
-    renderData: [],
-    ifShowButton: false,
-    bottomButton: [
-      {
-        text: '确定',
-        validate: true,
-        type: 'primary'
-      },
-      {
-        text: '取消',
-        validate: false,
-        type: 'default'
-      }
-    ]
+    renderData: []
+  },
+  modules: {
+    formCommonSetting
   },
   mutations: {
     setFormData (state, newData) {
@@ -35,12 +26,6 @@ const formDesigner = {
     },
     setRenderData (state, data) {
       state.renderData = data
-    },
-    setIfShowButton (state, sign) {
-      state.ifShowButton = sign
-    },
-    setBottomButton (state, buttonData) {
-      state.bottomButton = buttonData
     }
   }
 }

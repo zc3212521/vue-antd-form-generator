@@ -31,8 +31,13 @@
             class="row-view"
           />
       </draggable>
-      <div v-if="ifShowButton">
-        <a-button v-for="(btn, index) in bottomButton" :type="btn.type" :key="btn.key ? btn.key : index.toString()" style="margin-right: 20px;">{{ btn.text }}</a-button>
+      <div v-if="ifShowButton" :style="{textAlign: bottomButtonLayout}">
+        <a-button
+          v-for="(btn, index) in bottomButton"
+          :type="btn.type"
+          :key="btn.key ? btn.key : index.toString()"
+          :style="{marginRight: gutter / 2 + 'px'}"
+        >{{ btn.text }}</a-button>
       </div>
     </a-form>
   </div>
@@ -76,8 +81,10 @@ export default {
     },
     ...mapState({
       formData: state => state.formDesigner.formData,
-      ifShowButton: state => state.formDesigner.ifShowButton,
-      bottomButton: state => state.formDesigner.bottomButton
+      ifShowButton: state => state.formDesigner.formCommonSetting.ifShowButton,
+      bottomButton: state => state.formDesigner.formCommonSetting.bottomButton,
+      bottomButtonLayout: state => state.formDesigner.formCommonSetting.bottomButtonLayout,
+      gutter: state => state.formDesigner.formCommonSetting.gutter
     })
   },
   methods: {
