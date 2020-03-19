@@ -1,5 +1,5 @@
 <template>
-  <multipane class="custom-resizer" layout="vertical">
+  <multipane class="custom-resizer" :style="{height: contentHeight + 'px'}" layout="vertical">
     <div class="pane controls-list">
       <control-list />
     </div>
@@ -19,6 +19,7 @@ import { Multipane, MultipaneResizer } from 'vue-multipane'
 import ControlList from './ControlList'
 import ControlView from './ControlView'
 import ControlSetting from './ControlSetting'
+import { getClientHeight } from '../utils/index'
 export default {
   name: 'HFormContent',
   components: {
@@ -27,6 +28,16 @@ export default {
     ControlList,
     ControlView,
     ControlSetting
+  },
+  data () {
+    return {
+      contentHeight: 0
+    }
+  },
+  mounted () {
+    const headerHeight = document.getElementById('hform-header').offsetHeight
+    console.log(11122222, headerHeight)
+    this.contentHeight = getClientHeight() - headerHeight - 40
   }
 }
 </script>
@@ -40,16 +51,13 @@ export default {
   .custom-resizer > .pane {
     text-align: left;
     padding: 15px;
-    /*height: 100%;*/
-    min-height: 700px;
+    height: 100%;
     border: 1px solid #ccc;
     overflow-y: scroll;
   }
   .custom-resizer > .multipane-resizer {
     margin: 0;
     left: 0;
-    margin-top: 20%;
-    position: relative;
     &:before {
       display: block;
       content: "";

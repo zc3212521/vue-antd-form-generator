@@ -1,5 +1,5 @@
 <template>
-  <div>header</div>
+  <div id="hform-header">header</div>
 </template>
 
 <script>

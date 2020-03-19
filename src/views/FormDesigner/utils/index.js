@@ -80,3 +80,10 @@ function copyObject (ori, type, copy = {}) {
 export function generateUnitId () {
   return Math.random().toString(36).substr(2)
 }
+
+/**
+ * 获取浏览器窗口高度
+ */
+export function getClientHeight () {
+  return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+}
