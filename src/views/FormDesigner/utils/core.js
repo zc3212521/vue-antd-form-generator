@@ -64,13 +64,14 @@ export function transformRowsData (formData) {
   }
 }
 
-export function transFormFooterData (commonSetting) {
+export function transFormFooterData (commonSetting, ifShow) {
+  const buttons = ifShow ? commonSetting.bottomButton : []
   return {
     footer: {
       layout: {
         type: commonSetting.bottomButtonLayout
       },
-      buttons: commonSetting.bottomButton
+      buttons
     }
   }
 }
@@ -169,46 +170,57 @@ function transformItemAttr (colData) {
   }
 }
 
-// todo 废弃
-export function transformAddData (list, formData, index) {
-  formData.splice(index, 0, list[index])
-  return formData
+/**
+ * 转换patterns
+ * @param patterns, toString:boolean(是否正则表达式转换成字符串)
+ */
+export function transformPattern (patterns, ifReg2string) {
+  const result = {}
+  patterns.forEach(item => {
+    if (ifReg2string) {
+      result[item.name] = {
+        regexp: item.regexp.toString(),
+        message: item.message
+      }
+    } else {
+      result[item.name] = {
+        regexp: item.regexp,
+        message: item.message
+      }
+    }
+  })
+  return result
 }
 
-export function transformMoveData (formData, oldIndex, newIndex) {
-  const oldData = formData[newIndex]
-  formData[newIndex] = formData[oldIndex]
-  formData[oldIndex] = oldData
-  return formData
-}
-
-export function transformDeleteData (formData, index) {
-  // console.log('before slice', formData)
-  formData.splice(index, 1)
-  console.log('after slice', formData)
-  return formData
-}
-
-export function transformAddSubData (list, formData, index, subIndex) {
-  console.log(222, list, formData, index, subIndex)
-  if (formData[index].children) {
-    formData[index].children.splice(subIndex, 0, list[subIndex])
+export function getCode (renderData, patterns) {
+  const codeStr = `
+  <template>
+    <form-render
+      :meta-data="renderData"
+      @click-btn="getClick"
+      :extend-pattern="patterns"
+    />
+  </template>
+  <script>
+  import FormRender from '@/components/business/FormRender'
+  export defalut {
+    name: 'FormRender',
+    components: {
+      FormRender
+    },
+    data () {
+      return {
+        renderData: ${renderData},
+        patterns: ${patterns}
+      }
+    },
+    methods: {
+      getClick (val, index) {
+        console.log(val, index)
+      }
+    }
   }
-  return formData
-}
-
-export function transformMoveSubData (formData, index, subOldIndex, subNewIndex) {
-  const subData = formData[index].children
-  const oldSubData = subData[subNewIndex]
-  subData[subNewIndex] = subData[subOldIndex]
-  subData[subOldIndex] = oldSubData
-  formData[index].children = subData
-  return formData
-}
-
-export function transformDeleteSubData (formData, index, subIndex) {
-  const subData = formData[index].children
-  subData.splice(subIndex, 1)
-  formData[index].children = subData
-  return formData
+  </script>
+  `
+  return codeStr
 }
